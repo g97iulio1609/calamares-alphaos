@@ -1,14 +1,14 @@
 ---
-componentName:  manjaro
+componentName:  alphaos
 
 strings:
-    productName:         Manjaro Linux
-    shortProductName:    Manjaro
-    version:             0.9.0-dev
-    shortVersion:        0.9
-    versionedName:       Manjaro Linux 0.9.0 "Bellatrix"
-    shortVersionedName:  Manjaro 0.9
-    bootloaderEntryName: Manjaro
+    productName:         Alpha OS
+    shortProductName:    Alpha OS
+    version:             1.0 
+    shortVersion:        1.0
+    versionedName:       Alpha OS 1.0 "Prometheus"
+    shortVersionedName:  Alpha OS 1.0
+    bootloaderEntryName: Alpha OS
 
 images:
     productLogo:         "squid.png"
