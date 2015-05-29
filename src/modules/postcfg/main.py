@@ -27,6 +27,14 @@ def run():
     """ Misc postinstall configurations """
 
     install_path = libcalamares.globalstorage.value( "rootMountPoint" )
+#LOGIN 
+sed -i "s/pam-autologin-service=lightdm-autologin/#pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf
+sed -i "s/autologin-user=alpha/#autologin-user=/" /etc/lightdm/lightdm.conf
+sed -i "s/autologin-user-timeout=0/#autologin-user-timeout=0/" /etc/lightdm/lightdm.conf
+#SUDO
+sed -i "s/%sudo	ALL=(ALL) ALL/#%sudo	ALL=(ALL) ALL/" /etc/sudoers
+sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/#%wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers
+sed -i "s/alpha ALL=(ALL) NOPASSWD: ALL//" /etc/sudoers
 
     # Add BROWSER var
     os.system("echo \"BROWSER=/usr/bin/xdg-open\" >> {!s}/etc/environment".format(install_path))
