@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-# encoding: utf-8
 # === This file is part of Calamares - <http://github.com/calamares> ===
 #
-#   Copyright 2014 - 2015, Philip Müller <philm@manjaro.org>
+#   Copyright 2014, Teo Mrnjavac <teo@kde.org>
 #
 #   Calamares is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -18,39 +17,44 @@
 #   along with Calamares. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import subprocess
 
 import libcalamares
 
-import shutil
+from libcalamares.utils import chroot_call
+from libcalamares.utils import check_chroot_call
+
+def cleanup():
+    root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
+
+    # Remove pacman init service
+    if(os.path.exists("%s/etc/systemd/system/etc-pacman.d-gnupg.mount" % root_mount_point)):
+        chroot_call(['rm', '-f', '/etc/systemd/system/etc-pacman.d-gnupg.mount'])
+    if(os.path.exists("%s/etc/systemd/system/pacman-init.service" % root_mount_point)):
+        chroot_call(['rm', '-f', '/etc/systemd/system/pacman-init.service'])
+
+    # Init pacman keyring
+    check_chroot_call(['rm', '-rf', '/etc/pacman.d/gnupg'])
+    check_chroot_call(['pacman-key', '--init'])
+    check_chroot_call(['pacman-key', '--populate', 'archlinux'])
+    check_chroot_call(['pacman-key', '--populate', 'bbqlinux'])
+    chroot_call(['pacman-key', '--refresh-keys'])
+
+    
+    # Modify lightdm config
+
+    chroot_call(['rm', '-f', '/etc/lightdm/lightdm.conf'])
+    chroot_call(['mv', '-f', '/etc/lightdm/lightdm.conf.new', '/etc/lightdm/lightdm.conf'])
+chroot_call(['rm', '-f', '/etc/sudoers'])
+    chroot_call(['mv', '-f', '/etc/sudoers.new', '/etc/sudoers'])
+
+
+# Remove calamares
+    check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
+#Remove Live User
+   check_chroot_call(['userdel', 'alpha'])
+    
 
 def run():
-    """ Misc postinstall configurations """
-
-    install_path = libcalamares.globalstorage.value( "rootMountPoint" )
-
-
-    # Add BROWSER var
-     os.system("sed -i "s/pam-autologin-service=lightdm-autologin/#pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf".format(install_path))
-     os.system("sed -i "s/autologin-user=alpha/#autologin-user=/" /etc/lightdm/lightdm.conf".format(install_path))
-     os.system("sed -i "s/autologin-user-timeout=0/#autologin-user-timeout=0/" /etc/lightdm/lightdm.conf".format(install_path))
-     os.system("sed -i "sed -i "s/%sudo	ALL=(ALL) ALL/#%sudo	ALL=(ALL) ALL/" /etc/sudoers".format(install_path))
-     os.system("sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/#%wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers".format(install_path))
-     os.system("sed -i "s/alpha ALL=(ALL) NOPASSWD: ALL//" /etc/sudoers" /etc/sudoers".format(install_path))
-
-
-
-    # Remove calamares
-    if os.path.exists("{!s}/usr/bin/calamares".format(install_path)):
-        libcalamares.utils.chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
-
-    # Copy mirror list
-    shutil.copy2('/etc/pacman.d/mirrorlist',
-             os.path.join(install_path, 'etc/pacman.d/mirrorlist'))
-
-    # Copy random generated keys by pacman-init to target
-    if os.path.exists("{!s}/etc/pacman.d/gnupg".format(install_path)):
-        os.system("rm -rf {!s}/etc/pacman.d/gnupg".format(install_path))
-    os.system("cp -a /etc/pacman.d/gnupg {!s}/etc/pacman.d/".format(install_path))
-    libcalamares.utils.chroot_call(['pacman-key', '--populate', 'archlinux', 'manjaro'])
-
+    cleanup()
     return None
