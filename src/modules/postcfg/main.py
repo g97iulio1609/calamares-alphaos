@@ -27,29 +27,17 @@ def run():
     """ Misc postinstall configurations """
 
     install_path = libcalamares.globalstorage.value( "rootMountPoint" )
-#LOGIN 
-sed -i "s/pam-autologin-service=lightdm-autologin/#pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf
-sed -i "s/autologin-user=alpha/#autologin-user=/" /etc/lightdm/lightdm.conf
-sed -i "s/autologin-user-timeout=0/#autologin-user-timeout=0/" /etc/lightdm/lightdm.conf
-#SUDO
-sed -i "s/%sudo	ALL=(ALL) ALL/#%sudo	ALL=(ALL) ALL/" /etc/sudoers
-sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/#%wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers
-sed -i "s/alpha ALL=(ALL) NOPASSWD: ALL//" /etc/sudoers
+
 
     # Add BROWSER var
-    os.system("echo \"BROWSER=/usr/bin/xdg-open\" >> {!s}/etc/environment".format(install_path))
-    os.system("echo \"BROWSER=/usr/bin/xdg-open\" >> {!s}/etc/skel/.bashrc".format(install_path))
-    os.system("echo \"BROWSER=/usr/bin/xdg-open\" >> {!s}/etc/profile".format(install_path))
-    # Add TERM var
-    if os.path.exists("{!s}/usr/bin/mate-session".format(install_path)):
-        os.system("echo \"TERM=mate-terminal\" >> {!s}/etc/environment".format(install_path))
-        os.system("echo \"TERM=mate-terminal\" >> {!s}/etc/profile".format(install_path))
+     os.system("sed -i "s/pam-autologin-service=lightdm-autologin/#pam-autologin-service=lightdm-autologin/" /etc/lightdm/lightdm.conf".format(install_path))
+     os.system("sed -i "s/autologin-user=alpha/#autologin-user=/" /etc/lightdm/lightdm.conf".format(install_path))
+     os.system("sed -i "s/autologin-user-timeout=0/#autologin-user-timeout=0/" /etc/lightdm/lightdm.conf".format(install_path))
+     os.system("sed -i "sed -i "s/%sudo	ALL=(ALL) ALL/#%sudo	ALL=(ALL) ALL/" /etc/sudoers".format(install_path))
+     os.system("sed -i "s/%wheel ALL=(ALL) NOPASSWD: ALL/#%wheel ALL=(ALL) NOPASSWD: ALL/" /etc/sudoers".format(install_path))
+     os.system("sed -i "s/alpha ALL=(ALL) NOPASSWD: ALL//" /etc/sudoers" /etc/sudoers".format(install_path))
 
-    # Adjust Steam-Native when libudev.so.0 is available
-    if os.path.exists("{!s}/usr/lib/libudev.so.0".format(install_path)) or \
-            os.path.exists("{!s}/usr/lib32/libudev.so.0".format(install_path)):
-        os.system("echo -e \"STEAM_RUNTIME=0\nSTEAM_FRAME_FORCE_CLOSE=1\nLD_LIBRARY_PATH=\/usr\/lib\"" \
-                " >> {!s}/etc/environment".format(install_path))
+
 
     # Remove calamares
     if os.path.exists("{!s}/usr/bin/calamares".format(install_path)):
@@ -64,24 +52,5 @@ sed -i "s/alpha ALL=(ALL) NOPASSWD: ALL//" /etc/sudoers
         os.system("rm -rf {!s}/etc/pacman.d/gnupg".format(install_path))
     os.system("cp -a /etc/pacman.d/gnupg {!s}/etc/pacman.d/".format(install_path))
     libcalamares.utils.chroot_call(['pacman-key', '--populate', 'archlinux', 'manjaro'])
-
-    # Set /etc/keyboard.conf (keyboardctl is depreciated)
-    if os.path.exists("{!s}/etc/keyboard.conf".format(install_path)):
-        keyboard_layout = libcalamares.globalstorage.value("keyboardLayout")
-        keyboard_variant = libcalamares.globalstorage.value("keyboardVariant")
-        consolefh = open("{!s}/etc/keyboard.conf".format(install_path), "r")
-        newconsolefh = open("{!s}/etc/keyboard.new".format(install_path), "w")
-        for line in consolefh:
-            line = line.rstrip("\r\n")
-            if(line.startswith("XKBLAYOUT=")):
-                newconsolefh.write("XKBLAYOUT=\"{!s}\"\n".format(keyboard_layout))
-            elif(line.startswith("XKBVARIANT=") and keyboard_variant != ''):
-                newconsolefh.write("XKBVARIANT=\"{!s}\"\n".format(keyboard_variant))
-            else:
-                newconsolefh.write("{!s}\n".format(line))
-        consolefh.close()
-        newconsolefh.close()
-        libcalamares.utils.chroot_call(['mv', '/etc/keyboard.conf', '/etc/keyboard.conf.old'])
-        libcalamares.utils.chroot_call(['mv', '/etc/keyboard.new', '/etc/keyboard.conf'])
 
     return None
