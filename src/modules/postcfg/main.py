@@ -37,7 +37,6 @@ def cleanup():
     check_chroot_call(['rm', '-rf', '/etc/pacman.d/gnupg'])
     check_chroot_call(['pacman-key', '--init'])
     check_chroot_call(['pacman-key', '--populate', 'archlinux'])
-    check_chroot_call(['pacman-key', '--populate', 'bbqlinux'])
     chroot_call(['pacman-key', '--refresh-keys'])
 
     
@@ -45,16 +44,18 @@ def cleanup():
 
     chroot_call(['rm', '-f', '/etc/lightdm/lightdm.conf'])
     chroot_call(['mv', '-f', '/etc/lightdm/lightdm.conf.new', '/etc/lightdm/lightdm.conf'])
+#sudo
 chroot_call(['rm', '-f', '/etc/sudoers'])
-    chroot_call(['mv', '-f', '/etc/sudoers.new', '/etc/sudoers'])
+chroot_call(['mv', '-f', '/etc/sudoers.new', '/etc/sudoers'])
+chroot_call(['chown', 'root:root', '/etc/sudoers '])
+chroot_call(['chown', '-R', 'root:root', '/etc/sudoers.d '])
+chroot_call(['chmod', '440', '/etc/sudoers '])
+chroot_call(['chmod', '755', 'root:root', '/etc/sudoers.d '])
+chroot_call(['chmod', '440', '/etc/sudoers.d/* '])
 
 
 # Remove calamares
-    check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
+check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
 #Remove Live User
-   check_chroot_call(['userdel', 'alpha'])
-    
+check_chroot_call(['userdel', 'alpha'])
 
-def run():
-    cleanup()
-    return None
