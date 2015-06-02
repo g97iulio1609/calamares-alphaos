@@ -48,14 +48,15 @@ def cleanup():
 chroot_call(['rm', '-f', '/etc/sudoers'])
 chroot_call(['mv', '-f', '/etc/sudoers.new', '/etc/sudoers'])
 chroot_call(['chown', 'root:root', '/etc/sudoers '])
-chroot_call(['chown', '-R', 'root:root', '/etc/sudoers.d '])
-chroot_call(['chmod', '440', '/etc/sudoers '])
-chroot_call(['chmod', '755', 'root:root', '/etc/sudoers.d '])
-chroot_call(['chmod', '440', '/etc/sudoers.d/* '])
+chroot_call(['chmod', '440', '/etc/sudoers'])
+chroot_call(['chown', '-R', 'root:root', '/etc/sudoers.d'])
+chroot_call(['chmod', '755', 'root:root', '/etc/sudoers.d'])
+chroot_call(['chmod', '440', '/etc/sudoers.d/*'])
 
 
 # Remove calamares
 check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
 #Remove Live User
 check_chroot_call(['userdel', 'alpha'])
+exit
 
