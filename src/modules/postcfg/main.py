@@ -24,7 +24,7 @@ import libcalamares
 from libcalamares.utils import chroot_call
 from libcalamares.utils import check_chroot_call
 
-def cleanup():
+def run():
     root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
 
     # Remove pacman init service
@@ -52,11 +52,12 @@ chroot_call(['chmod', '440', '/etc/sudoers'])
 chroot_call(['chown', '-R', 'root:root', '/etc/sudoers.d'])
 chroot_call(['chmod', '755', 'root:root', '/etc/sudoers.d'])
 chroot_call(['chmod', '440', '/etc/sudoers.d/*'])
-
+chroot_call(['chown', 'root:root', '/etc/sudoers '])
 
 # Remove calamares
 check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
 #Remove Live User
 check_chroot_call(['userdel', 'alpha'])
-exit
+
+return None
 
