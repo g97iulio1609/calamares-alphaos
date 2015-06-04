@@ -24,7 +24,8 @@ import libcalamares
 from libcalamares.utils import chroot_call
 from libcalamares.utils import check_chroot_call
 
-def run():
+
+def cleanup():
     root_mount_point = libcalamares.globalstorage.value("rootMountPoint")
 
     # Remove pacman init service
@@ -59,5 +60,7 @@ check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
 #Remove Live User
 check_chroot_call(['userdel', 'alpha'])
 
-return None
 
+def run():
+    cleanup()
+    return None
