@@ -54,6 +54,7 @@ chroot_call(['chown', '-R', 'root:root', '/etc/sudoers.d'])
 chroot_call(['chmod', '755', 'root:root', '/etc/sudoers.d'])
 chroot_call(['chmod', '440', '/etc/sudoers.d/*'])
 chroot_call(['chown', 'root:root', '/etc/sudoers '])
+chroot_call(['rm', '-f', '/etc/sudoers.d/*'])
 
 # Remove calamares
 check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
