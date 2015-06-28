@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 # === This file is part of Calamares - <http://github.com/calamares> ===
 #
@@ -45,7 +46,7 @@ def cleanup():
 
     chroot_call(['rm', '-f', '/etc/lightdm/lightdm.conf'])
     chroot_call(['mv', '-f', '/etc/lightdm/lightdm.conf.new', '/etc/lightdm/lightdm.conf'])
-#sudo
+#Fix Live
 chroot_call(['rm', '-f', '/etc/sudoers'])
 chroot_call(['mv', '-f', '/etc/sudoers.new', '/etc/sudoers'])
 chroot_call(['chown', 'root:root', '/etc/sudoers '])
@@ -55,7 +56,9 @@ chroot_call(['chmod', '755', 'root:root', '/etc/sudoers.d'])
 chroot_call(['chmod', '440', '/etc/sudoers.d/*'])
 chroot_call(['chown', 'root:root', '/etc/sudoers '])
 chroot_call(['rm', '-f', '/etc/sudoers.d/g_wheel'])
-
+chroot_call(['rm', '-f', '/etc/xdg/autostart/calamares.desktop'])
+#Remove Live Package
+check_chroot_call(['pacman', '-R', '--noconfirm', 'alphaos-live'])
 # Remove calamares
 check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
 #Remove Live User
