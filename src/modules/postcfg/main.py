@@ -57,8 +57,6 @@ chroot_call(['chmod', '440', '/etc/sudoers.d/*'])
 chroot_call(['chown', 'root:root', '/etc/sudoers '])
 chroot_call(['rm', '-f', '/etc/sudoers.d/g_wheel'])
 chroot_call(['rm', '-f', '/etc/xdg/autostart/calamares.desktop'])
-#Remove Live Package
-check_chroot_call(['pacman', '-R', '--noconfirm', 'alphaos-live-settings'])
 # Remove calamares
 check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
 #Remove Live User
