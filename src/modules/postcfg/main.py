@@ -49,19 +49,21 @@ def cleanup():
 #Fix Live
 chroot_call(['rm', '-f', '/etc/sudoers'])
 chroot_call(['mv', '-f', '/etc/sudoers.new', '/etc/sudoers'])
+chroot_call(['rm', '-f', '/etc/sudoers.d/g_wheel'])
+chroot_call(['rm', '-f', '/etc/xdg/autostart/calamares.desktop'])
+check_chroot_call(['sed', '-i', '"s/antergos/alphaos/"', '/etc/lightdm/lightdm-webkit2-greeter.conf'])
+#Fix Sudo
+chroot_call(['chmod', '700', '/root'])
 chroot_call(['chown', 'root:root', '/etc/sudoers '])
 chroot_call(['chmod', '440', '/etc/sudoers'])
 chroot_call(['chown', '-R', 'root:root', '/etc/sudoers.d'])
 chroot_call(['chmod', '755', 'root:root', '/etc/sudoers.d'])
 chroot_call(['chmod', '440', '/etc/sudoers.d/*'])
-chroot_call(['chown', 'root:root', '/etc/sudoers '])
-chroot_call(['rm', '-f', '/etc/sudoers.d/g_wheel'])
-chroot_call(['rm', '-f', '/etc/xdg/autostart/calamares.desktop'])
 # Remove calamares
 check_chroot_call(['pacman', '-R', '--noconfirm', 'calamares'])
+chroot_call(['chmod', '755', 'root:root', '/etc/sudoers.d'])
 #Remove Live User
 check_chroot_call(['userdel', 'alpha'])
-
 
 def run():
     cleanup()
